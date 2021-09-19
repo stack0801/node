@@ -14,6 +14,7 @@ function TemplateHTML(title, list, body)
   <body>
   <h1><a href="/">WEB</a></h1>
   ${list}
+  <a href="create">create</a>
   ${body}
   </body>
   </html>
@@ -59,6 +60,32 @@ var app = http.createServer(function(request,response)
         response.end(template);
       });
     });
+  }
+  else if(pathname === '/create')
+  {
+    fs.readdir('./data', function(error, filelist)
+    {
+      title = 'Welcome'
+      var list = TemplateList(filelist);
+      var template = TemplateHTML(title, list, `
+        <form action="http://localhost:3000/create_process" method="post">
+          <p><input type="text" name="title" placeholder="title"></p>
+          <p>
+            <textarea name="description" placeholder="description"></textarea>
+          </p>
+          <p>
+            <input type="submit">
+          </p>
+        </form>
+      `);
+      response.writeHead(200);
+      response.end(template);
+    });
+  }
+  else if(pathname === '/create_process')
+  {
+    response.writeHead(200);
+    response.end('success');
   }
   else
   {
